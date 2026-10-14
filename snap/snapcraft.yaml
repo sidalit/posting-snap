@@ -25,6 +25,7 @@ confinement: strict
 website: https://github.com/darrenburns/posting
 source-code: https://github.com/darrenburns/posting
 issues: https://github.com/darrenburns/posting/issues
+contact: https://github.com/sidalit/posting-snap/issues
 
 platforms:
   amd64:
