@@ -17,7 +17,7 @@ snapcraft pack
 <a href="https://snapcraft.io/posting"><img alt="Get it from the Snap Store" src="https://snapcraft.io/en/dark/install.svg" width="180"></a>
 
 ```bash
-sudo snap install posting                   # or a local build: ./posting_2.11.2_*.snap --dangerous
+sudo snap install posting
 sudo snap connect posting:removable-media   # optional: /media, /mnt
 mkdir -p ~/my-api
 posting --collection ~/my-api
@@ -25,44 +25,18 @@ posting --collection ~/my-api
 
 ## Known limitations
 
-### Config and default collection location
-
-Posting keeps its settings and default collection in the snap's own folder, not in `~/.config/posting` or `~/.local/share/posting`:
-
-| What | Path |
-|---|---|
-| Config file | `~/snap/posting/current/.config/posting/config.yaml` |
-| Default collection | `~/snap/posting/current/.local/share/posting/default` |
-| Themes | `~/snap/posting/current/.local/share/posting/themes` |
-
-`posting locate config`, `posting locate collection` and `posting locate themes` print these paths. To reuse an existing setup, copy it over:
-
-```bash
-mkdir -p ~/snap/posting/current/.config/posting
-cp ~/.config/posting/config.yaml ~/snap/posting/current/.config/posting/
-```
-
-Keep your collections in a normal (not hidden) folder in your home directory and open them with `--collection`.
-
-### Hidden folders in your home directory
-
-The snap cannot read hidden files or folders directly in your home directory, such as `~/.api-collections`. Posting still opens, but the collection looks empty. Use a normal folder instead.
-
-### External editor and pager
-
-The snap cannot run programs installed on your system, so editors and pagers such as `nano`, `vim` or `code` are not found. Only `vi` (vim.tiny) and `less` from the core26 base work:
-
-```bash
-EDITOR=vi PAGER=less posting --collection ~/my-api
-```
-
-### Clipboard
-
-Copying uses your terminal's clipboard support (OSC 52). It works in most modern terminals, but not in some (for example macOS Terminal or some terminal multiplexer setups).
+- Collections must be in a non-hidden home folder or connected removable storage. Hidden files directly under your home directory are inaccessible.
+- Settings, themes and the default collection use the snap's own directories. Use `posting locate config`, `posting locate themes` or `posting locate collection` to find them.
+- Host editors and pagers are unavailable. Use the base's tools with `EDITOR=vi PAGER=less posting --collection ~/my-api`.
+- Clipboard copying requires terminal support for OSC 52.
 
 ## Update to a new upstream release
 
-Change `version` and `source-tag` in `snap/snapcraft.yaml`, then rebuild.
+Change `source-tag` in `snap/snapcraft.yaml`, then rebuild. The version is taken from the upstream project metadata.
+
+## Automation
+
+Builds, publishing, and dependency updates use [snap-automation](https://github.com/sidalit/snap-automation).
 
 ## License
 

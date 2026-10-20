@@ -1,6 +1,6 @@
 name: posting
 base: core26
-version: '2.11.2'
+adopt-info: posting
 title: Posting
 summary: Interactive terminal HTTP/API client with collections and environments
 description: |
@@ -30,10 +30,6 @@ contact: https://github.com/sidalit/posting-snap/issues
 platforms:
   amd64:
   arm64:
-  armhf:
-  ppc64el:
-  riscv64:
-  s390x:
 
 apps:
   posting:
@@ -48,7 +44,12 @@ parts:
   posting:
     plugin: uv
     source: https://github.com/darrenburns/posting.git
+    # renovate: depName=darrenburns/posting
     source-tag: '2.11.2'
+    override-pull: |
+      craftctl default
+      version=$(python3 -c 'import pathlib, tomllib; print(tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"]["version"])')
+      craftctl set version="$version"
     build-snaps:
       - astral-uv
     build-packages:
@@ -57,8 +58,8 @@ parts:
       - rustc
       - pkg-config
     build-environment:
-      # core26 ships Python 3.14, which the locked pydantic 2.11 does not
-      # support. Bundle a standalone CPython 3.12 in usr/ instead.
+      # The locked pydantic 2.11 does not support Ubuntu 26.04's Python 3.14.
+      # Bundle a standalone CPython 3.12 in usr/ instead.
       - PATH: $CRAFT_PART_INSTALL/bin:$CRAFT_PART_INSTALL/usr/bin:$PATH
       - PARTS_PYTHON_INTERPRETER: python3.12
     override-build: |
