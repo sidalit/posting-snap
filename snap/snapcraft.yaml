@@ -1,6 +1,6 @@
 name: posting
 base: core26
-adopt-info: posting
+version: '2.11.2'
 title: Posting
 summary: Interactive terminal HTTP/API client with collections and environments
 description: |
@@ -44,12 +44,7 @@ parts:
   posting:
     plugin: uv
     source: https://github.com/darrenburns/posting.git
-    # renovate: depName=darrenburns/posting
-    source-tag: '2.11.2'
-    override-pull: |
-      craftctl default
-      version=$(python3 -c 'import pathlib, tomllib; print(tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"]["version"])')
-      craftctl set version="$version"
+    source-tag: $SNAPCRAFT_PROJECT_VERSION
     build-snaps:
       - astral-uv
     build-packages:
