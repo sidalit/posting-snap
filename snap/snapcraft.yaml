@@ -2,6 +2,7 @@ name: posting
 base: core26
 version: '2.11.2'
 title: Posting
+icon: snap/gui/posting.png
 summary: Interactive terminal HTTP/API client with collections and environments
 description: |
   Posting is an HTTP client that runs in your terminal. Requests are saved

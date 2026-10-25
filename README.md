@@ -1,43 +1,73 @@
-# Posting snap
+<div align="center">
+
+<img src="snap/gui/posting.png" alt="Posting logo" width="128" />
+
+# Posting
+
+**An HTTP client for your terminal**
 
 [![posting](https://snapcraft.io/posting/badge.svg)](https://snapcraft.io/posting)
+[![Base: core26](https://img.shields.io/badge/Base-core26-2C8C3C?logo=canonical&logoColor=white)](https://snapcraft.io/core26)
+![Confinement: strict](https://img.shields.io/badge/Confinement-strict-2C8C3C)
+[![Maintainer: sidaliteir](https://img.shields.io/badge/Maintainer-sidaliteir-2C8C3C?logo=snapcraft&logoColor=white)](https://snapcraft.io/publisher/sidaliteir)
+![Architectures: amd64 and arm64](https://img.shields.io/badge/Architectures-amd64%20%7C%20arm64-2C8C3C?logo=linux&logoColor=white)
 
-Snap packaging for [Posting](https://github.com/darrenburns/posting), an interactive terminal HTTP/API client with request collections and environments.
+[Getting Started](#getting-started) · [Configure](#configure) · [Limitations](#limitations) · [Build](#build) · [Support](#support) · [License](#license)
 
-Unofficial build, not affiliated with or endorsed by the Posting project.
+Unofficial snap packaging for [Posting](https://github.com/darrenburns/posting), an interactive API client with request collections and environments.
 
-## Build
+</div>
 
-```bash
-snapcraft pack
-```
+---
 
-## Install and try
+## Getting Started
 
 <a href="https://snapcraft.io/posting"><img alt="Get it from the Snap Store" src="https://snapcraft.io/en/dark/install.svg" width="180"></a>
 
 ```bash
 sudo snap install posting
-sudo snap connect posting:removable-media   # optional: /media, /mnt
 mkdir -p ~/my-api
 posting --collection ~/my-api
 ```
 
-## Known limitations
+## Configure
 
-- Collections must be in a non-hidden home folder or connected removable storage. Hidden files directly under your home directory are inaccessible.
-- Settings, themes and the default collection use the snap's own directories. Use `posting locate config`, `posting locate themes` or `posting locate collection` to find them.
-- Host editors and pagers are unavailable. Use the base's tools with `EDITOR=vi PAGER=less posting --collection ~/my-api`.
+There are no `snap set` options. Use Posting's own settings and command-line options.
+
+| Setting or file | How to select or locate it |
+| --- | --- |
+| Request collection | `--collection ~/my-api` |
+| Environment file | `--env ~/my-api/dev.env` |
+| Settings | `posting locate config` |
+| Themes | `posting locate themes` |
+| Default collection | `posting locate collection` |
+
+Settings, themes and the default collection use the snap's directories. For `/media` or `/mnt` access:
+
+```bash
+sudo snap connect posting:removable-media
+```
+
+## Limitations
+
+- Keep collections in a non-hidden home folder or connected removable storage. Hidden files directly under your normal home directory are inaccessible.
+- Host editors and pagers are unavailable. Use `EDITOR=vi PAGER=less posting --collection ~/my-api` for the bundled tools.
 - Clipboard copying requires terminal support for OSC 52.
 
-## Update to a new upstream release
+## Build
 
-Change `version` in `snap/snapcraft.yaml`, then rebuild.
+```bash
+git clone https://github.com/sidalit/posting-snap.git
+cd posting-snap
+sudo snap install snapcraft --classic
+snapcraft pack
+```
 
-## Automation
+## Support
 
-Builds, publishing, and dependency updates use [snap-automation](https://github.com/sidalit/snap-automation).
+- **Installation or snap issues:** [open a packaging issue](https://github.com/sidalit/posting-snap/issues).
+- **Application bugs:** [report them upstream](https://github.com/darrenburns/posting/issues).
 
 ## License
 
-The packaging is MIT-licensed (see `LICENSE`). Posting is Apache-2.0-licensed; its dependencies carry their own licenses.
+Snap packaging: [MIT](https://github.com/sidalit/posting-snap/blob/main/LICENSE).
