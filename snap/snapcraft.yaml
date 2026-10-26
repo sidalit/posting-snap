@@ -46,34 +46,17 @@ apps:
       - removable-media
 
 parts:
-  posting:
-    plugin: uv
-    source: https://github.com/darrenburns/posting.git
-    source-tag: $SNAPCRAFT_PROJECT_VERSION
+  python-runtime:
+    plugin: nil
     build-snaps:
       - astral-uv
-    build-packages:
-      - build-essential
-      - cargo
-      - rustc
-      - pkg-config
-    build-environment:
-      # The locked pydantic 2.11 does not support Ubuntu 26.04's Python 3.14.
-      # Bundle a standalone CPython 3.12 in usr/ instead.
-      - PATH: $CRAFT_PART_INSTALL/bin:$CRAFT_PART_INSTALL/usr/bin:$PATH
-      - PARTS_PYTHON_INTERPRETER: python3.12
     override-build: |
+      # The locked pydantic 2.11 does not support Ubuntu 26.04's Python 3.14.
       UV_PYTHON_DOWNLOADS=manual UV_PYTHON_PREFERENCE=only-managed \
         uv python install --no-bin --install-dir "$CRAFT_PART_BUILD/python" 3.12
       python_dir=$(find "$CRAFT_PART_BUILD/python" -mindepth 1 -maxdepth 1 -type d -name 'cpython-3.12*' -print -quit)
       mkdir -p "$CRAFT_PART_INSTALL/usr"
       cp -a "$python_dir/." "$CRAFT_PART_INSTALL/usr/"
-      craftctl default
-      ln -sf python3.12 "$CRAFT_PART_INSTALL/bin/python"
-      mkdir -p "$CRAFT_PART_INSTALL/share/bash-completion/completions"
-      _POSTING_COMPLETE=bash_source "$CRAFT_PART_INSTALL/bin/posting" \
-        > "$CRAFT_PART_INSTALL/share/bash-completion/completions/posting"
-      install -Dm644 LICENSE "$CRAFT_PART_INSTALL/share/doc/posting/LICENSE"
     prime:
       - -usr/bin/2to3*
       - -usr/bin/idle3*
@@ -95,3 +78,29 @@ parts:
       - -usr/lib/tcl*
       - -usr/lib/tk*
       - -usr/lib/thread*
+
+  posting:
+    after: [python-runtime]
+    plugin: uv
+    source: https://github.com/darrenburns/posting.git
+    source-tag: $SNAPCRAFT_PROJECT_VERSION
+    build-snaps:
+      - astral-uv
+    build-packages:
+      - build-essential
+      - cargo
+      - rustc
+      - pkg-config
+    build-environment:
+      - PATH: $CRAFT_PART_INSTALL/bin:$CRAFT_STAGE/usr/bin:$PATH
+      - PARTS_PYTHON_INTERPRETER: python3.12
+    override-build: |
+      craftctl default
+      ln -sf python3.12 "$CRAFT_PART_INSTALL/bin/python"
+      mkdir -p "$CRAFT_PART_INSTALL/share/bash-completion/completions"
+      _POSTING_COMPLETE=bash_source \
+        PYTHONPATH="$CRAFT_PART_INSTALL/lib/python3.12/site-packages" \
+        "$CRAFT_STAGE/usr/bin/python3.12" \
+        -c 'from posting.__main__ import cli; cli(prog_name="posting")' \
+        > "$CRAFT_PART_INSTALL/share/bash-completion/completions/posting"
+      install -Dm644 LICENSE "$CRAFT_PART_INSTALL/share/doc/posting/LICENSE"
