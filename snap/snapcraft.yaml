@@ -65,6 +65,8 @@ parts:
       - -usr/bin/python3*-config
       - -usr/include
       - -usr/lib/libpython3*.so*
+      - -usr/lib/libtcl9.0.so
+      - -usr/lib/libtcl9tk9.0.so
       - -usr/share
       - -usr/lib/pkgconfig
       - -usr/lib/python3.12/ensurepip
